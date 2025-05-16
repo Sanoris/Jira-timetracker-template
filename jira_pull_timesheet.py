@@ -141,11 +141,11 @@ def build_timesheet(issues, domain, output_file, start, end):
     #day_counts = df.groupby("DATE")["TICKET"].count().to_dict()
     #df["HOURS"] = df["DATE"].apply(lambda d: round(10 / day_counts[d], 2) if day_counts[d] > 0 else 1.5)
     df_grouped = df.groupby(["DATE", "TICKET", "DESCRIPTION"]).agg({"HOURS": "sum"}).reset_index()
-    df_grouped = df_grouped.drop_duplicates(subset=["DATE", "TICKET", "DESCRIPTION"])
+    #df_grouped = df_grouped.drop_duplicates(subset=["DATE", "TICKET", "DESCRIPTION"])
     df_grouped["LINK"] = df_grouped["TICKET"].apply(
         lambda key: f'=HYPERLINK("https://{domain}.atlassian.net/browse/{key}", "{key}")' if key else ""
     )
-    df_grouped.to_excel(output_file, index=False)
+    df_grouped.to_excel(output_file, index=False, columns=["DATE", "HOURS", "TICKET", "DESCRIPTION",  "LINK"])
     print("\n[info] [trust:high] DataFrame exported to file. Preview:")
     #print(df_grouped.to_string(index=False, justify='left', col_space=16))
     wb = load_workbook(output_file)
